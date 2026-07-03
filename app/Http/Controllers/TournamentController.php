@@ -273,21 +273,20 @@ class TournamentController extends Controller
     // SECTION 5: AI DOCUMENTATION GENERATOR
     // ==========================================
     public function generateDocs() {
-        // 1. Fetch the key and use trim() to destroy any invisible spaces/newlines
+        // Fetch the key safely
         $apiKey = trim(env('GEMINI_API_KEY'));
         
-        // 2. The prompt
         $prompt = "You are an expert technical writer. Write a brief, professional system documentation for a Laravel-based 'Tournament Tracking System'. 
         The system includes: Team Registration, Player Management, Match Scheduling, a Leaderboard, and an Admin vs User role system. 
         Format the response in clean, raw HTML (use <h2>, <ul>, <li>, <p>, and <strong>). Do not include any markdown formatting like ```html.";
 
-        // 3. Safely build the URL as a separate variable
-        $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" . $apiKey;
-
-        // 4. Send the POST request
+        // THE NUCLEAR FIX: We split the URL into Base URL and Path to completely prevent Guzzle scheme errors.
+        // We are also using gemini-3.5-flash, which is the current 2026 free-tier model.
         $response = Http::withOptions([
-            'verify' => false // Prevents SSL certificate errors on local XAMPP machines
-        ])->post($url, [
+            'verify' => false 
+        ])
+        ->baseUrl('https://generativelanguage.googleapis.com')
+        ->post('/v1beta/models/gemini-3.5-flash:generateContent?key=' . $apiKey, [
             'contents' => [
                 [
                     'parts' => [
@@ -297,13 +296,12 @@ class TournamentController extends Controller
             ]
         ]);
 
-        // 5. Handle the response
         if ($response->successful()) {
             $generatedText = $response->json()['candidates'][0]['content']['parts'][0]['text'];
             return view('documentation', ['docs' => $generatedText]);
         }
 
-        // If it fails, print the exact error Google sent back to us
+        // If it fails, print the exact API error to a black screen
         dd($response->json());
     }
 }

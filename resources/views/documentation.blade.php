@@ -10,7 +10,7 @@
         </div>
         
         <div class="card" style="background-color: white; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 8px; line-height: 1.6;">
-            <!-- We use {!! !!} instead of {{ }} so Laravel renders the raw HTML tags that Gemini gives us, rather than printing them as plain text -->
+            <!-- Rendering the raw HTML tags from the AI -->
             {!! $docs !!}
         </div>
     </div>
