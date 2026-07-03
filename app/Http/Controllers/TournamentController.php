@@ -19,8 +19,7 @@ class TournamentController extends Controller
         return view('dashboard');
     }
 
-    // Shows the Team Management Hub (For Admins AND Users)
-   // Shows the Team Management Hub
+    // Shows the Team Management Hub
     public function storeData() {
         // READ LOGIC: Admins see ALL teams and their players. Normal users see their OWN.
         if (Auth::user()->role === 'admin') {
@@ -58,20 +57,23 @@ class TournamentController extends Controller
     public function storeTeam(Request $request) {
         // STRICT ERROR BLOCKING: Validate everything BEFORE saving
         $request->validate([
-            'team_id_code' => 'required|unique:teams,team_id_code', // Must be unique in 'teams' table
             'team_name' => 'required|unique:teams,team_name',       // Must be unique in 'teams' table
             'players.*.student_id' => 'nullable|distinct|unique:players,student_id' // Must be unique in 'players' table
         ], [
             // Custom Error Messages
-            'team_id_code.unique' => 'The Team ID you entered is already in use.',
             'team_name.unique' => 'The Team Name you entered is already in use.',
             'players.*.student_id.unique' => 'One of the Student IDs is already registered to a team.',
             'players.*.student_id.distinct' => 'You entered the exact same Student ID twice in this form.'
         ]);
         
+        // Step 1.5: Auto-Generate the Team ID (e.g., KPMIM-001)
+        $latestTeam = Team::latest('id')->first();
+        $nextNumber = $latestTeam ? $latestTeam->id + 1 : 1;
+        $generatedTeamId = 'KPMIM-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+
         // Step 2: Save the Team to the Database (Default to 0 points)
         $team = Team::create([
-            'team_id_code' => $request->team_id_code,
+            'team_id_code' => $generatedTeamId,
             'team_name' => $request->team_name,
             'points' => 0, 
             'user_id' => Auth::id()
@@ -89,7 +91,9 @@ class TournamentController extends Controller
                 }
             }
         }
-        return back()->with('success', 'Team and Roster Created Successfully!');
+        
+        // Return with the newly generated ID so the user knows what it is!
+        return back()->with('success', 'Team and Roster Created Successfully! Your Team ID is: ' . $generatedTeamId);
     }
 
     // UPDATE: Change a Team Name or Add Multiple New Players

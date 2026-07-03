@@ -8,7 +8,7 @@
         @if(session('success')) <div class="alert alert-success">{{ session('success') }}</div> @endif
         @if(session('error')) <div class="alert alert-error">{{ session('error') }}</div> @endif
 
-        <!-- NEW: Automatic Validation Error Messages -->
+        <!-- Automatic Validation Error Messages -->
         @if($errors->any())
             <div class="alert alert-error" style="background-color: #fee2e2; color: #991b1b; padding: 15px; border-radius: 5px; margin-bottom: 20px; border-left: 5px solid #dc2626;">
                 <strong style="display: block; margin-bottom: 5px;">Wait! Please fix the following errors:</strong>
@@ -27,11 +27,18 @@
             <h3 style="color: #0284c7;">1. Register New Team</h3>
             <form method="POST" action="{{ url('/store-team') }}">
                 @csrf
-                <label>Team ID (Primary Key):</label>
-                <input type="text" name="team_id_code" placeholder="e.g., T001" required>
                 
                 <label>Team Name:</label>
                 <input type="text" name="team_name" placeholder="e.g., Cyber Strikers" required>
+
+                <!-- ERROR MESSAGE FOR DUPLICATE TEAM NAME -->
+                @error('team_name')
+                    <span style="color: red; font-size: 0.9em; display: block; margin-top: 5px;">
+                        {{ $message }}
+                    </span>
+                @enderror
+                
+                <br><br>
                 
                 <label>Starting Players (Optional):</label>
                 <div id="player-rows">
@@ -127,7 +134,7 @@
                 playerIndex++;
             }
 
-            // 2. Script for UPDATE form (NEW!)
+            // 2. Script for UPDATE form
             let updatePlayerIndex = 1; 
             function addUpdatePlayerRow() {
                 const container = document.getElementById('update-player-rows');
