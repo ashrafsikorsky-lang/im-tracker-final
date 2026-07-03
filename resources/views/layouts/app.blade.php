@@ -39,16 +39,17 @@
     @auth
         <nav class="nav-bar">
             <a href="{{ url('/dashboard') }}">Dashboard</a>
-            
-            @if(Auth::user()->role === 'admin')
-                <a href="{{ url('/store-data') }}">Manage Teams</a>
-                <a href="{{ url('/admin-inbox') }}" style="color: #fef08a;">Admin Inbox</a>
-            @endif
+
+            <a href="{{ url('/store-data') }}">Manage Teams</a>
             
             <a href="{{ url('/view-information') }}">View Leaderboard & Matches</a>
             
             <!-- Everyone gets access to the Support form -->
             <a href="{{ url('/support') }}">Support & Disputes</a>
+
+            @if(Auth::user()->role === 'admin')
+                <a href="{{ url('/admin-inbox') }}" style="color: #fef08a;">Admin Inbox</a>
+            @endif
             
             <form method="POST" action="{{ route('logout') }}" style="display:inline; margin: 0;">
                 @csrf
