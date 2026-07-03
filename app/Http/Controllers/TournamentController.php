@@ -282,7 +282,7 @@ class TournamentController extends Controller
         Format the response in clean, raw HTML (use <h2>, <ul>, <li>, <p>, and <strong>). Do not include any markdown formatting like ```html.";
 
         // 3. Safely build the URL as a separate variable
-        $url = "[https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=](https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=)" . $apiKey;
+        $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" . $apiKey;
 
         // 4. Send the POST request
         $response = Http::withOptions([
