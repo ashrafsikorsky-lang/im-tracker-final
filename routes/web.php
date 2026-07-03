@@ -42,14 +42,4 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/docs', [App\Http\Controllers\DocumentationController::class, 'index']);
 });
 
-use Illuminate\Support\Facades\Artisan;
-
-Route::get('/run-migrations', function () {
-    Artisan::call('migrate:fresh', [
-        '--seed' => true,
-        '--force' => true
-    ]);
-    return 'Database migrated and seeded successfully! You can now delete this route.';
-});
-
 require __DIR__.'/auth.php';
