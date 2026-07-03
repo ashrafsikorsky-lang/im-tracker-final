@@ -304,6 +304,6 @@ class TournamentController extends Controller
         }
 
         // If it fails, print the exact error Google sent back to us
-        return back()->with('error', 'API Error: ' . $response->body());
+        dd($response->json());
     }
 }
