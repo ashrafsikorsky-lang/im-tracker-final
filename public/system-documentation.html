@@ -1,0 +1,43 @@
+
+            <!DOCTYPE html>
+            <html lang='en'>
+            <head>
+                <meta charset='UTF-8'>
+                <title>System Documentation</title>
+                <style>
+                    body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 900px; margin: 40px auto; padding: 20px; color: #333; }
+                    h2 { color: #0284c7; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+                </style>
+            </head>
+            <body>
+                <h2>Tournament Tracking System - System Documentation</h2>
+
+<p>This document provides a brief technical and functional overview of the Laravel-based <strong>Tournament Tracking System</strong>. The platform is designed to manage competitive tournaments by streamlining team registration, scheduling matches, and calculating real-time standings.</p>
+
+<h2>System Overview</h2>
+<p>The system is built on the <strong>Laravel framework</strong>, utilizing its Model-View-Controller (MVC) architecture, Eloquent ORM, and built-in authentication mechanisms to deliver a secure and scalable tournament management solution.</p>
+
+<h2>Core Features</h2>
+<ul>
+    <li><strong>Team Registration:</strong> Allows team managers to register their teams, input official team details, and submit registrations for administrative approval.</li>
+    <li><strong>Player Management:</strong> Enables the creation and maintenance of player profiles. Users can assign players to specific teams, track roster changes, and maintain historical player data.</li>
+    <li><strong>Match Scheduling:</strong> Provides tools to generate, update, and display tournament fixtures. It tracks match dates, times, venues, and opposing teams.</li>
+    <li><strong>Leaderboard:</strong> A dynamic standings table that automatically calculates points, wins, losses, draws, and score differentials in real-time as match results are entered.</li>
+</ul>
+
+<h2>User Roles and Permissions</h2>
+<p>The system utilizes a <strong>Role-Based Access Control (RBAC)</strong> system to separate administrative actions from general user capabilities:</p>
+<ul>
+    <li><strong>Admin Role:</strong> Holds full system privileges. Admins can create and edit tournaments, generate match schedules, input official match scores, and manage all registered teams and players.</li>
+    <li><strong>User Role:</strong> Restricted to self-service actions. Users can register their own teams, manage their specific player rosters, and view public schedules and the leaderboard.</li>
+</ul>
+
+<h2>Database and Relations</h2>
+<p>The application relies on a relational database managed through Laravel Migrations. Key Eloquent relationships include:</p>
+<ul>
+    <li><strong>Teams and Players:</strong> A One-to-Many relationship (one Team has many Players).</li>
+    <li><strong>Teams and Matches:</strong> A Many-to-Many relationship linked via a Match pivot table containing scores and match metadata.</li>
+    <li><strong>Users and Teams:</strong> A One-to-Many relationship linking team managers to their respective registered teams.</li>
+</ul>
+            </body>
+            </html>

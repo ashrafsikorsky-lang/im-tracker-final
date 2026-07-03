@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TournamentController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DocumentationController;
 
 // Redirect homepage to login
 Route::get('/', function () { 
@@ -38,9 +39,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin-inbox', [TournamentController::class, 'adminInbox']);
     Route::delete('/resolve-inquiry/{id}', [TournamentController::class, 'destroyInquiry']);
 
-    // AUTO-GENERATED DOCUMENTATION ROUTES
-    Route::get('/docs', [App\Http\Controllers\DocumentationController::class, 'index']);
-    Route::get('/documentation', [App\Http\Controllers\TournamentController::class, 'generateDocs']);
+    // DOCUMENTATION ROUTE
+    Route::get('/docs', [DocumentationController::class, 'index'])->name('docs.index');
 });
 
 require __DIR__.'/auth.php';
