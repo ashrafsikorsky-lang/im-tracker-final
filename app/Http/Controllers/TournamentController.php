@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use App\Models\Team;
 use App\Models\Game;
 use App\Models\Player;
@@ -266,5 +267,43 @@ class TournamentController extends Controller
         
         Inquiry::findOrFail($id)->delete();
         return back()->with('success', 'Ticket marked as resolved and deleted!');
+    }
+
+    // ==========================================
+    // SECTION 5: AI DOCUMENTATION GENERATOR
+    // ==========================================
+    public function generateDocs() {
+        // 1. Fetch the key and use trim() to destroy any invisible spaces/newlines
+        $apiKey = trim(env('GEMINI_API_KEY'));
+        
+        // 2. The prompt
+        $prompt = "You are an expert technical writer. Write a brief, professional system documentation for a Laravel-based 'Tournament Tracking System'. 
+        The system includes: Team Registration, Player Management, Match Scheduling, a Leaderboard, and an Admin vs User role system. 
+        Format the response in clean, raw HTML (use <h2>, <ul>, <li>, <p>, and <strong>). Do not include any markdown formatting like ```html.";
+
+        // 3. Safely build the URL as a separate variable
+        $url = "[https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=](https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=)" . $apiKey;
+
+        // 4. Send the POST request
+        $response = Http::withOptions([
+            'verify' => false // Prevents SSL certificate errors on local XAMPP machines
+        ])->post($url, [
+            'contents' => [
+                [
+                    'parts' => [
+                        ['text' => $prompt]
+                    ]
+                ]
+            ]
+        ]);
+
+        // 5. Handle the response
+        if ($response->successful()) {
+            $generatedText = $response->json()['candidates'][0]['content']['parts'][0]['text'];
+            return view('documentation', ['docs' => $generatedText]);
+        }
+
+        // If it fails, print the exact error Google sent back to us
+        return back()->with('error', 'API Error: ' . $response->body());
     }
 }

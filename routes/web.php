@@ -40,6 +40,7 @@ Route::middleware(['auth'])->group(function () {
 
     // AUTO-GENERATED DOCUMENTATION ROUTES
     Route::get('/docs', [App\Http\Controllers\DocumentationController::class, 'index']);
+    Route::get('/documentation', [App\Http\Controllers\TournamentController::class, 'generateDocs']);
 });
 
 require __DIR__.'/auth.php';
