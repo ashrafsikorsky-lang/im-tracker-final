@@ -2,7 +2,8 @@
 
 @section('content')
     <div class="content">
-        <h2>Team Management Hub</h2>
+        <h4>Team Management Hub</h4>
+        <br>
 
         <!-- Manual Session Messages -->
         @if(session('success')) <div class="alert alert-success">{{ session('success') }}</div> @endif

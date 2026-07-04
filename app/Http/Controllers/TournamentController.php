@@ -15,9 +15,21 @@ class TournamentController extends Controller
     // SECTION 1: VIEWING PAGES 
     // ==========================================
     
-    // Shows the main dashboard
-    public function dashboard() {
-        return view('dashboard');
+    // Shows the main dashboard (Now includes Leaderboard & Match Schedule!)
+    public function dashboard(Request $request) {
+        // 1. Get all teams for the Leaderboard, sorted by highest points
+        $teams = Team::orderBy('points', 'desc')->get();
+
+        // 2. Handle the Roster Search function
+        $searchResult = null;
+        if ($request->has('search_id') && $request->search_id != '') {
+            $searchResult = Team::with('players')->where('team_id_code', $request->search_id)->first();
+        }
+
+        // 3. Get all the matches for the Schedule Table using the Game model
+        $matches = Game::with(['team1', 'team2'])->orderBy('match_time', 'asc')->get();
+
+        return view('dashboard', compact('teams', 'searchResult', 'matches'));
     }
 
     // Shows the Team Management Hub
@@ -31,24 +43,6 @@ class TournamentController extends Controller
         
         return view('store_data', compact('myTeams'));
     }
-
-    // Shows the Leaderboard AND the Match Schedule
-    public function viewInformation(Request $request) {
-        // 1. Get all teams for the Leaderboard, sorted by highest points
-        $teams = Team::orderBy('points', 'desc')->get();
-
-        // 2. Handle the Roster Search function
-        $searchResult = null;
-        if ($request->has('search_id') && $request->search_id != '') {
-            $searchResult = Team::with('players')->where('team_id_code', $request->search_id)->first();
-        }
-
-        // 3. Get all the matches for the Schedule Table
-        $matches = Game::with(['team1', 'team2'])->orderBy('match_time', 'asc')->get();
-
-        return view('view_information', compact('teams', 'searchResult', 'matches'));
-    }
-
 
     // ==========================================
     // SECTION 2: CREATE, UPDATE, DELETE TEAMS (Shared CRUD)
@@ -225,6 +219,7 @@ class TournamentController extends Controller
         
         return back()->with('success', 'Match deleted successfully!');
     }
+
     // ==========================================
     // SECTION 4: SUPPORT & DISPUTE SYSTEM
     // ==========================================
@@ -285,7 +280,7 @@ class TournamentController extends Controller
         $response = Http::withOptions([
             'verify' => false 
         ])
-        ->baseUrl('https://generativelanguage.googleapis.com')
+        ->baseUrl('[https://generativelanguage.googleapis.com](https://generativelanguage.googleapis.com)')
         ->post('/v1beta/models/gemini-3.5-flash:generateContent?key=' . $apiKey, [
             'contents' => [
                 [
