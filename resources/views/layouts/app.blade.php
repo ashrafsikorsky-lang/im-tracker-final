@@ -107,7 +107,7 @@
     <!-- ========================================== -->
     <footer class="bg-[#0f172a] text-gray-400 text-center py-6 text-sm w-full mt-auto border-t border-gray-800">
         <p>&copy; 2026 KPMIM IM Tournament Tracking System. All rights reserved.</p>
-        <p class="mt-1 hover:text-gray-300 transition cursor-pointer">imtracker.kpmim.edu.my</p>
+        <p class="mt-1 hover:text-gray-300 transition cursor-pointer">imtracker@kpmim.edu.my</p>
     </footer>
 
 </body>
