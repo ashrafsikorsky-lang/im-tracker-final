@@ -19,6 +19,10 @@ class GenerateDocumentation extends Command
     {
         $this->info('Starting documentation generation...');
         
+        // FIX 1: Wipe the old documentation database so deleted controllers don't show up!
+        $this->info('Clearing old documentation records from the database...');
+        DocumentationEntry::truncate();
+        
         $controllerFiles = File::allFiles(app_path('Http/Controllers'));
 
         // Dapatkan kunci API Gemini dengan selamat
@@ -85,20 +89,22 @@ class GenerateDocumentation extends Command
                 
                 $jsonSummary = json_encode($summary, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
-                $prompt = "Anda adalah seorang penulis teknikal pakar Laravel. Tugas anda adalah untuk menjana dokumentasi teknikal yang jelas dan profesional dalam format Markdown untuk kelas Controller Laravel yang diberikan berdasarkan nama kelasnya, laluan fail, metod-metod, serta fail-fail view, model, ujian, dan factory yang berkaitan.\n\n";
+                // FIX 2: Updated Prompt to force Raw HTML and ignore Auth Controllers
+                $prompt = "Anda adalah seorang penulis teknikal pakar Laravel. Tugas anda adalah untuk menjana dokumentasi teknikal yang jelas dan profesional dalam format RAW HTML (gunakan tag seperti <h2>, <ul>, <li>, <p>, dan <strong>) untuk kelas Controller Laravel yang diberikan. JANGAN masukkan apa-apa pemformatan markdown seperti ```html.\n\n";
+                $prompt .= "CRITICAL INSTRUCTION: ONLY document the core tournament features. DO NOT include, mention, or generate documentation for any default Laravel Authentication controllers (like PasswordController, EmailVerificationController, ConfirmablePasswordController, etc). Focus only on the standard user/admin capabilities.\n\n";
                 $prompt .= "Sila ikut struktur ini:\n";
-                $prompt .= "1.  **Nama Kelas (Class Name)** – Nama kelas penuh beserta namespace.\n";
-                $prompt .= "2.  **Laluan Fail (File Path)** – Lokasi fail controller.\n";
-                $prompt .= "3.  **Penerangan (Description)** – Ringkasan tujuan controller dalam 2-3 ayat.\n";
-                $prompt .= "4.  **Gambaran Keseluruhan Metod (Methods Overview)** – Senaraikan setiap metod dalam kelas dengan:\n";
+                $prompt .= "1.  <strong>Nama Kelas (Class Name)</strong> – Nama kelas penuh beserta namespace.\n";
+                $prompt .= "2.  <strong>Laluan Fail (File Path)</strong> – Lokasi fail controller.\n";
+                $prompt .= "3.  <strong>Penerangan (Description)</strong> – Ringkasan tujuan controller dalam 2-3 ayat.\n";
+                $prompt .= "4.  <strong>Gambaran Keseluruhan Metod (Methods Overview)</strong> – Senaraikan setiap metod dalam kelas dengan:\n";
                 $prompt .= "    - Nama metod\n";
                 $prompt .= "    - Tujuan (berdasarkan nama metod dan konteks kelas)\n";
                 $prompt .= "    - Parameter (jika dapat dikesan atau inferens umum)\n";
                 $prompt .= "    - Nilai Pulangan (apa yang mungkin dipulangkan)\n";
-                $prompt .= "5.  **Model Digunakan (Used Models)** – Senaraikan dan terangkan setiap model Eloquent yang digunakan dalam controller.\n";
-                $prompt .= "6.  **View Digunakan (Used Views)** – Senaraikan fail view Blade yang di-render.\n\n";
+                $prompt .= "5.  <strong>Model Digunakan (Used Models)</strong> – Senaraikan dan terangkan setiap model Eloquent yang digunakan dalam controller.\n";
+                $prompt .= "6.  <strong>View Digunakan (Used Views)</strong> – Senaraikan fail view Blade yang di-render.\n\n";
                 $prompt .= "Berikut adalah ringkasan JSON mengenai kelas tersebut:\n\n";
-                $prompt .= "```json\n" . $jsonSummary . "\n```";
+                $prompt .= $jsonSummary;
 
                 $this->line("Sending request to Gemini AI for {$fqcn}...");
                 
@@ -135,9 +141,12 @@ class GenerateDocumentation extends Command
                 $this->error("Gagal memproses {$fqcn}: " . $e->getMessage());
             }
             $this->line("--------------------------------------------------");
+            
+            // FIX 3: API Rate Limit Fix (Pause for 5 seconds before the next controller)
+            sleep(5);
         }
         
-        $this->info('Documentation generation complete!');
+        $this->info('Documentation generation complete! You can now view the fresh documentation at /docs');
         return 0;
     }
 

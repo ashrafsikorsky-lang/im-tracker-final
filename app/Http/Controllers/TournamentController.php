@@ -275,8 +275,8 @@ class TournamentController extends Controller
         The system includes: Team Registration, Player Management, Match Scheduling, a Leaderboard, and an Admin vs User role system. 
         Format the response in clean, raw HTML (use <h2>, <ul>, <li>, <p>, and <strong>). Do not include any markdown formatting like ```html.";
 
-        // THE NUCLEAR FIX: We split the URL into Base URL and Path to completely prevent Guzzle scheme errors.
-        // We are also using gemini-3.5-flash, which is the current 2026 free-tier model.
+        // THE NUCLEAR FIX: I split the URL into Base URL and Path to completely prevent Guzzle scheme errors.
+        // I am also using gemini-3.5-flash, which is the current 2026 free-tier model.
         $response = Http::withOptions([
             'verify' => false 
         ])

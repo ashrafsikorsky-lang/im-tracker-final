@@ -83,7 +83,7 @@
             <a href="{{ url('/store-data') }}" class="hover:text-blue-400 transition flex items-center gap-2">Manage Teams</a>
             <a href="{{ url('/support') }}" class="hover:text-blue-400 transition flex items-center gap-2">Support & Disputes</a>
             
-            @if(Auth::user()->role === 'admin')
+            @if(Auth::user()->role === 'admin') <!-- Only show this link if the user is an admin -->
                 <a href="{{ url('/admin-inbox') }}" class="text-yellow-400 hover:text-yellow-200 transition flex items-center gap-2">Admin Inbox</a>
             @endif
             
