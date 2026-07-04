@@ -62,7 +62,7 @@
     <!-- Dark Footer -->
     <footer class="bg-[#0f172a] text-gray-400 text-center py-6 text-sm relative z-10">
         <p>&copy; 2026 KPMIM IM Tournament Tracking System. All rights reserved.</p>
-        <p class="mt-1">imtracker.kpmim.edu.my</p>
+        <p class="mt-1">imtracker@kpmim.edu.my</p>
     </footer>
 
 </body>
